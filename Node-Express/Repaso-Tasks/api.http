@@ -1,0 +1,13 @@
+GET http://localhost:3000/tasks
+
+### Crear una nueva tarea
+POST http://localhost:3000/tasks?title=
+
+### GETBYID
+GET http://localhost:3000/tasks/1
+
+### Actualizar una tarea
+PATCH http://localhost:3000/tasks/2?title=Tarea muy especial&completed=true
+
+### Eliminar
+DELETE  http://localhost:3000/tasks/4

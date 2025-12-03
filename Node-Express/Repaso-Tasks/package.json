@@ -1,0 +1,24 @@
+{
+  "name": "repaso-2-tasks",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "standard": "^17.1.2"
+  },
+  "dependencies": {
+    "express": "5.2.1",
+    "zod": "4.1.13"
+  },
+  "eslintConfig": {
+    "extends": "standard"
+  }
+}

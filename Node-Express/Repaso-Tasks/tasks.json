@@ -1,0 +1,27 @@
+[
+  {
+    "id": "1",
+    "title": "Comprar comida para el perro",
+    "completed": false
+  },
+  {
+    "id": "2",
+    "title": "Estudiar Node.js una hora",
+    "completed": true
+  },
+  {
+    "id": "3",
+    "title": "Llamar al banco para aclarar un cargo",
+    "completed": false
+  },
+  {
+    "id": "4",
+    "title": "Limpiar escritorio de trabajo",
+    "completed": false
+  },
+  {
+    "id": "5",
+    "title": "Subir proyecto a GitHub",
+    "completed": true
+  }
+]
