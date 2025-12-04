@@ -4,16 +4,12 @@ A simple backend for inventory management made with ExpressJS and MySQL. This pr
 
 ## Technologies
 
----
-
 - **Node.js**
 - **Express.js**
 - **MySQL**
 - **zod**
 
 ## Features
-
----
 
 This project would let you:
 
