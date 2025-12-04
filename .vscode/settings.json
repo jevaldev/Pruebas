@@ -1,5 +1,6 @@
 {
   "conventionalCommits.scopes": [
-    "AdventJS2025"
+    "AdventJS2025",
+    "Node-Express"
   ]
 }
