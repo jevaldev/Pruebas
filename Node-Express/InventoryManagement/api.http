@@ -6,9 +6,16 @@ POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-  "name": "Laptop ASUS X515",
-  "description": "Laptop de uso general con 8GB RAM y SSD",
-  "category": "Electronics",
-  "price": 12999.99,
-  "stock": 15
+  "name": "Monitor LG 24'",
+  "description": "Full HD IPS display",
+  "category": "electronics",
+  "price": 3499.99,
+  "stock": 8,
+  "isActive": 1
 }
+### Get products by category
+### ?category=Electronics
+### ?category=Storage
+### ?category=Accessories
+### ?category=Furniture
+GET http://localhost:3000/products?category=electronics&name=La
