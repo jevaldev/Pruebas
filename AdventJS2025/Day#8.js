@@ -1,23 +1,26 @@
-//Problema #7 Montando el árbol
+//Problema #8 Encuentra el juguete único
 //Fácil
 
-function drawTree(height, ornament, frequency) {
-  let counter = 1
-  let tree = ""
+function findUniqueToy(toy) {
+  let firstUniqueLetter = ""
+  const toyLetters = toy.split("")
   
-  for (let n = 1; n<=height; n++) {
-    const charactersPerRow = 2 * n - 1
-    const blankSpaces = height - n
-    let rows = " ".repeat(blankSpaces)
+  const uniqueLetters = toyLetters.reduce((obj, letter) => {
+    const letterInLowerCase = letter.toLowerCase()
     
-    for (let i = 0; i < charactersPerRow; i++){
-      rows += counter % frequency === 0 ? ornament : "*"
-      counter++
+    if(!obj[letterInLowerCase]) { 
+      obj[letterInLowerCase] = {"firstLetter": letter, "repeated": false}
+    } else {
+      obj[letterInLowerCase].repeated = true 
     }
     
-    tree += rows + '\n' 
+    return obj
+  }, {})
+  
+  for (const letter in uniqueLetters) {
+    const {firstLetter, repeated} = uniqueLetters[letter]
+    if(!repeated) return firstUniqueLetter = firstLetter 
   }
   
-  tree += " ".repeat(height - 1) + "#"
-  return tree
+  return firstUniqueLetter
 }
