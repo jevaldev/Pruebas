@@ -6,7 +6,7 @@ POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-  "name": "Monitor LG 24'",
+  "name": "Monitor LG'",
   "description": "Full HD IPS display",
   "category": "electronics",
   "price": 3499.99,
@@ -18,4 +18,4 @@ Content-Type: application/json
 ### ?category=Storage
 ### ?category=Accessories
 ### ?category=Furniture
-GET http://localhost:3000/products?category=electronics&name=La
+GET http://localhost:3000/products?category=electronics&name=Lasdad&stockasd=10

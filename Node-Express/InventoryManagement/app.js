@@ -13,6 +13,16 @@ export const createApp = ({ productsModel }) => {
     return res.status(404).json({ error: 'Resource not found. Check the URL' })
   })
 
+  app.use((err, req, res, next) => {
+    const statusCode = err.status || 500
+
+    return res.status(statusCode).json({
+      error: true,
+      type: err.name || 'InternalServerError',
+      message: err.message || 'Unexpected error'
+    })
+  })
+
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`)
   })
