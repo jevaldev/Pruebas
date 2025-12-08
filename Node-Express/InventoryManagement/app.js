@@ -1,5 +1,6 @@
 import express from 'express'
 import { createProductRouter } from './routes/products.js'
+import { ZodError } from 'zod'
 
 export const createApp = ({ productsModel }) => {
   const app = express()
@@ -14,9 +15,17 @@ export const createApp = ({ productsModel }) => {
   })
 
   app.use((err, req, res, next) => {
-    const statusCode = err.status || 500
-
-    return res.status(statusCode).json({
+    if (err instanceof ZodError) {
+      return res.status(400).json({
+        error: true,
+        type: 'ValidationError',
+        fields: err.errors.map(issue => ({
+          field: issue.path.join('.'),
+          message: issue.message
+        }))
+      })
+    }
+    return res.status(err.statusCode || 500).json({
       error: true,
       type: err.name || 'InternalServerError',
       message: err.message || 'Unexpected error'
