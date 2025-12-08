@@ -33,6 +33,20 @@ export class ProductsModel {
     }
   }
 
+  static async getProductById ({ id }) {
+    try {
+      const [product] = await connection.query('SELECT BIN_TO_UUID(id) as id, name, description, category, price, stock, isActive FROM products WHERE BIN_TO_UUID(id) = ?', id)
+
+      if (!product.length) throw new ProductNotFound()
+
+      return product
+    } catch (err) {
+      if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
+      if (err instanceof ProductNotFound) throw err
+      throw new DatabaseQueryError()
+    }
+  }
+
   static async createProduct ({ input }) {
     const {
       name,

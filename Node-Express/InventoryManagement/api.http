@@ -1,6 +1,9 @@
 ### Get all products
 GET http://localhost:3000/products
 
+### Get product by ID
+GET http://localhost:3000/products/b2fc555d-d20b-11f0-89bf-58f1af9bf708
+
 ### Create a new product
 POST http://localhost:3000/products
 Content-Type: application/json

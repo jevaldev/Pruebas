@@ -9,5 +9,7 @@ export const createProductRouter = ({ productsModel }) => {
   productRouter.get('/', productController.getProducts)
   productRouter.post('/', productController.createProduct)
 
+  productRouter.get('/:id', productController.getProductById)
+
   return productRouter
 }

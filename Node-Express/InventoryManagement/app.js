@@ -25,7 +25,7 @@ export const createApp = ({ productsModel }) => {
         }))
       })
     }
-    return res.status(err.statusCode || 500).json({
+    return res.status(err.status || 500).json({
       error: true,
       type: err.name || 'InternalServerError',
       message: err.message || 'Unexpected error'

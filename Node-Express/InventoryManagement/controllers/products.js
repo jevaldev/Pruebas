@@ -20,6 +20,16 @@ export class ProductsController {
     }
   }
 
+  getProductById = async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const product = await this.productsModel.getProductById({ id })
+      return res.json({ message: 'Product found successfully', data: product })
+    } catch (err) {
+      next(err)
+    }
+  }
+
   createProduct = async (req, res, next) => {
     try {
       const result = validateProduct(req.body)
