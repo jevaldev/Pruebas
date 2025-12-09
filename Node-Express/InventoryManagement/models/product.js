@@ -10,7 +10,7 @@ export class ProductsModel {
     const { conditions, params } = getFilters([
       { sql: 'name LIKE ?', value: name ? `%${name}%` : undefined },
       { sql: 'LOWER(category) = ?', value: category?.toLowerCase() },
-      { sql: 'isActive = ?', value: isActive }
+      { sql: 'isActive = ?', value: Number(isActive) }
     ])
 
     let countQuery = 'SELECT COUNT(*) AS Total FROM products'
@@ -129,6 +129,21 @@ export class ProductsModel {
       if (statusUpdated.affectedRows === 0) throw new ProductNotFound()
     } catch (err) {
       console.log(err)
+      if (err instanceof ProductNotFound) throw err
+      if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
+      throw new DatabaseQueryError()
+    }
+  }
+
+  static async deleteProduct ({ id }) {
+    try {
+      const [deletedRows] = await connection.query(`
+        UPDATE products
+        SET isDeleted = 1
+        WHERE id = UUID_TO_BIN(?)`, id)
+
+      if (deletedRows.affectedRows === 0) throw new ProductNotFound()
+    } catch (err) {
       if (err instanceof ProductNotFound) throw err
       if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       throw new DatabaseQueryError()

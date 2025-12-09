@@ -32,7 +32,7 @@ const UpdateProductSchema = BaseProductSchema.partial()
 const ProductFilterSchema = z.object({
   name: z.string().optional(),
   category: CategorySchema.optional(),
-  isActive: z.number().int().min(0).max(1).optional()
+  isActive: z.coerce.number().int().min(0).max(1).optional()
 })
 
 const UpdateStatusSchema = z.object({

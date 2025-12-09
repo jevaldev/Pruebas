@@ -82,4 +82,15 @@ export class ProductsController {
       next(err)
     }
   }
+
+  deleteProduct = async (req, res, next) => {
+    try {
+      const { id } = req.params
+      await this.productsModel.deleteProduct({ id })
+
+      return res.json('Product deleted successfully')
+    } catch (err) {
+      next(err)
+    }
+  }
 }

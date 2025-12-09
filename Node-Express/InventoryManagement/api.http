@@ -21,10 +21,10 @@ Content-Type: application/json
 ### ?category=Storage
 ### ?category=Accessories
 ### ?category=Furniture
-GET http://localhost:3000/products?name=a&category=electronics
+GET http://localhost:3000/products?name=a&isActive=0
 
 ### Update product
-PUT http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
+PUT http://localhost:3000/products/79fce6c4-d52e-11f0-89bf-58f1af9bf708
 Content-Type: application/json
 
 {
@@ -32,7 +32,8 @@ Content-Type: application/json
   "description": "Full HD IPS display",
   "category": "electronics",
   "price": 3499.99,
-  "stock": 8
+  "stock": 8,
+  "isDeleted": 0
 }
 
 ### Update product status
@@ -43,3 +44,5 @@ Content-Type: application/json
   "isActive": 0
 }
 
+### Soft-Delete product
+DELETE http://localhost:3000/products/79fce6c4-d52e-11f0-89bf-58f1af9bf708
