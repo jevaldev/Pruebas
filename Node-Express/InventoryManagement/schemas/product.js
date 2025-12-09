@@ -7,50 +7,39 @@ const categoriesEnum = [
   'storage'
 ]
 
-const productSchema = z.object({
+const CategorySchema = z.string()
+  .transform(val => val.toLowerCase())
+  .refine(val => categoriesEnum.includes(val), {
+    message: 'Invalid category'
+  })
+
+const BaseProductSchema = z.object({
   name: z.string(),
-  description: z.string().default("This item doesn't have a description"),
-  category: z.string()
-    .transform(val => val.toLowerCase())
-    .refine(val =>
-      categoriesEnum.includes(val),
-    { message: 'Invalid category' }
-    ),
+  description: z.string(),
+  category: CategorySchema,
   price: z.number().positive(),
   stock: z.number().int().min(0),
+  isActive: z.number().int().min(0).max(1)
+})
+
+const CreateProductSchema = BaseProductSchema.extend({
+  description: z.string().default("This item doesn't have a description"),
   isActive: z.number().int().min(0).max(1).default(1)
 })
 
-const updateProductSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  category: z.string()
-    .transform(val => val.toLowerCase())
-    .refine(val =>
-      categoriesEnum.includes(val),
-    { message: 'Invalid category' }
-    ),
-  price: z.number().positive(),
-  stock: z.number().int().min(0)
-})
+const UpdateProductSchema = BaseProductSchema.partial()
 
-const productFilterSchema = z.object({
+const ProductFilterSchema = z.object({
   name: z.string().optional(),
-  category: z.string()
-    .transform(val => val?.toLowerCase())
-    .refine(val => !val || categoriesEnum.includes(val), { message: 'Invalid category' })
-    .optional(),
+  category: CategorySchema.optional(),
   isActive: z.number().int().min(0).max(1).optional()
 })
 
-export function validateProduct (object) {
-  return productSchema.safeParse(object)
-}
+const UpdateStatusSchema = z.object({
+  isActive: z.number().int().min(0).max(1)
+})
 
-export function validatePartialProduct (object) {
-  return updateProductSchema.partial().safeParse(object)
-}
-
-export function validateFiltersProduct (object) {
-  return productFilterSchema.partial().safeParse(object)
-}
+export const validateCreateProduct = obj => CreateProductSchema.safeParse(obj)
+export const validateUpdateProduct = obj => UpdateProductSchema.safeParse(obj)
+export const validateProductFilters = obj => ProductFilterSchema.safeParse(obj)
+export const validateStatus = obj => UpdateStatusSchema.safeParse(obj)

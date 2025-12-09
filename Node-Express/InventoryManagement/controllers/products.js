@@ -1,4 +1,4 @@
-import { validateFiltersProduct, validatePartialProduct, validateProduct } from '../schemas/product.js'
+import { validateProductFilters, validateStatus, validateUpdateProduct, validateCreateProduct } from '../schemas/product.js'
 
 export class ProductsController {
   constructor ({ productsModel }) {
@@ -8,7 +8,7 @@ export class ProductsController {
   getProducts = async (req, res, next) => {
     try {
       const { page = 1, limit = 10 } = req.query
-      const result = validateFiltersProduct(req.query)
+      const result = validateProductFilters(req.query)
 
       if (result.error) return res.status(400).json({ error: JSON.parse(result.error.message) })
 
@@ -42,7 +42,7 @@ export class ProductsController {
 
   createProduct = async (req, res, next) => {
     try {
-      const result = validateProduct(req.body)
+      const result = validateCreateProduct(req.body)
 
       if (result.error) return res.status(400).json({ error: JSON.parse(result.error.message) })
 
@@ -57,13 +57,27 @@ export class ProductsController {
   updateProduct = async (req, res, next) => {
     try {
       const { id } = req.params
-      const result = validatePartialProduct(req.body)
+      const result = validateUpdateProduct(req.body)
 
       if (result.error) return res.status(400).json({ error: JSON.parse(result.error.message) })
 
       await this.productsModel.updateProduct({ id, input: result.data })
 
       return res.json({ message: 'Product updated successfully' })
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  updateProductStatus = async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const result = validateStatus(req.body)
+
+      if (result.error) return res.status(400).json({ message: JSON.parse(result.error.message) })
+      await this.productsModel.updateProductStatus({ id, isActive: result.data.isActive })
+
+      return res.json({ message: 'Product status updated successfully' })
     } catch (err) {
       next(err)
     }

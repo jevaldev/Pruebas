@@ -39,9 +39,9 @@ export class ProductsModel {
         totalCount: total,
         totalPages
       }
-    } catch (error) {
-      if (error.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
-      if (error instanceof ProductNotFound) throw error
+    } catch (err) {
+      if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
+      if (err instanceof ProductNotFound) throw err
 
       throw new DatabaseQueryError()
     }
@@ -84,37 +84,52 @@ export class ProductsModel {
         WHERE id = UUID_TO_BIN(?)
       `, [uuid])
       return product[0]
-    } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') throw new DuplicatedProduct('Product already exits')
-      if (error.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
+    } catch (err) {
+      console.log(err)
+      if (err.code === 'ER_DUP_ENTRY') throw new DuplicatedProduct('Product already exits')
+      if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       throw new DatabaseQueryError()
     }
   }
 
   static async updateProduct ({ id, input }) {
+    const fields = Object.keys(input)
+
+    if (fields.length === 0) throw new BlankInputValues()
+
+    const setClause = fields.map(field => `${field} = ?`).join(' ,')
+    const values = fields.map(field => input[field])
+
     try {
-      const fields = Object.keys(input)
-
-      if (fields.length === 0) throw new BlankInputValues()
-
-      const setClause = fields.map(field => `${field} = ?`).join(' ,')
-      const values = fields.map(field => input[field])
-
       const [productUpdated] = await connection.query(
         `
         UPDATE products
         SET ${setClause}
-        WHERE BIN_TO_UUID(id) = ?
+        WHERE id = UUID_TO_BIN(?)
         `,
         [...values, id]
       )
 
       if (productUpdated.affectedRows === 0) throw new ProductNotFound()
-
-      return productUpdated
     } catch (err) {
       if (err instanceof ProductNotFound || err instanceof BlankInputValues) throw err
       if (err.code === 'ER_DUP_ENTRY') throw new DuplicatedProduct('The name of that product already exists')
+      if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
+      throw new DatabaseQueryError()
+    }
+  }
+
+  static async updateProductStatus ({ id, isActive }) {
+    try {
+      const [statusUpdated] = await connection.query(`
+        UPDATE products 
+        SET isActive = ? 
+        WHERE id = UUID_TO_BIN(?)`, [isActive, id])
+
+      if (statusUpdated.affectedRows === 0) throw new ProductNotFound()
+    } catch (err) {
+      console.log(err)
+      if (err instanceof ProductNotFound) throw err
       if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       throw new DatabaseQueryError()
     }

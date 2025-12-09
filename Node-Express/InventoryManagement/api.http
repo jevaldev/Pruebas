@@ -1,5 +1,5 @@
 ### Get all products
-GET http://localhost:3000/products?page=5&limit=7
+GET http://localhost:3000/products?page=1&limit=7
 
 ### Get product by ID
 GET http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
@@ -9,12 +9,12 @@ POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-  "name": "Monitor LG",
+  "name": "Monitor Zowie",
   "description": "Full HD IPS display",
   "category": "electronics",
   "price": 3499.99,
   "stock": 8,
-  "isActive": 1
+  "isActive": 0
 }
 ### Get products by category
 ### ?category=Electronics
@@ -28,10 +28,18 @@ PUT http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
 Content-Type: application/json
 
 {
-  "name": "Monitor LG",
+  "name": "Monitor Asus rog strix",
   "description": "Full HD IPS display",
   "category": "electronics",
   "price": 3499.99,
-  "stock": 8,
-  "isActive": 1
+  "stock": 8
 }
+
+### Update product status
+PATCH http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
+Content-Type: application/json
+
+{
+  "isActive": 0
+}
+
