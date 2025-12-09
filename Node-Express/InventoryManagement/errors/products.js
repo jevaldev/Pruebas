@@ -13,3 +13,10 @@ export class DuplicatedProduct extends Error {
     this.status = 409
   }
 }
+
+export class BlankInputValues extends Error {
+  constructor (message = 'No fields provided to update the product') {
+    super(message)
+    this.name = 'BlankInputValues'
+  }
+}

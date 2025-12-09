@@ -21,6 +21,19 @@ const productSchema = z.object({
   isActive: z.number().int().min(0).max(1).default(1)
 })
 
+const updateProductSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  category: z.string()
+    .transform(val => val.toLowerCase())
+    .refine(val =>
+      categoriesEnum.includes(val),
+    { message: 'Invalid category' }
+    ),
+  price: z.number().positive(),
+  stock: z.number().int().min(0)
+})
+
 const productFilterSchema = z.object({
   name: z.string().optional(),
   category: z.string()
@@ -32,6 +45,10 @@ const productFilterSchema = z.object({
 
 export function validateProduct (object) {
   return productSchema.safeParse(object)
+}
+
+export function validatePartialProduct (object) {
+  return updateProductSchema.partial().safeParse(object)
 }
 
 export function validateFiltersProduct (object) {

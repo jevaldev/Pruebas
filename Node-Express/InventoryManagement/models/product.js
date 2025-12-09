@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { getFilters } from '../lib/getFilters.js'
 import { connection } from '../database/connection.js'
 import { DatabaseConnectionError, DatabaseQueryError } from '../errors/database.js'
-import { ProductNotFound, DuplicatedProduct } from '../errors/products.js'
+import { ProductNotFound, DuplicatedProduct, BlankInputValues } from '../errors/products.js'
 
 export class ProductsModel {
   static async getProducts ({ category, name, isActive }) {
@@ -73,6 +73,35 @@ export class ProductsModel {
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') throw new DuplicatedProduct('Product already exits')
       if (error.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
+      throw new DatabaseQueryError()
+    }
+  }
+
+  static async updateProduct ({ id, input }) {
+    try {
+      const fields = Object.keys(input)
+
+      if (fields.length === 0) throw new BlankInputValues()
+
+      const setClause = fields.map(field => `${field} = ?`).join(' ,')
+      const values = fields.map(field => input[field])
+
+      const [productUpdated] = await connection.query(
+        `
+        UPDATE products
+        SET ${setClause}
+        WHERE BIN_TO_UUID(id) = ?
+        `,
+        [...values, id]
+      )
+
+      if (productUpdated.affectedRows === 0) throw new ProductNotFound()
+
+      return productUpdated
+    } catch (err) {
+      if (err instanceof ProductNotFound || err instanceof BlankInputValues) throw err
+      if (err.code === 'ER_DUP_ENTRY') throw new DuplicatedProduct('The name of that product already exists')
+      if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       throw new DatabaseQueryError()
     }
   }

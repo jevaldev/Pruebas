@@ -2,14 +2,14 @@
 GET http://localhost:3000/products
 
 ### Get product by ID
-GET http://localhost:3000/products/b2fc555d-d20b-11f0-89bf-58f1af9bf708
+GET http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
 
 ### Create a new product
 POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-  "name": "Monitor LG'",
+  "name": "Monitor LG",
   "description": "Full HD IPS display",
   "category": "electronics",
   "price": 3499.99,
@@ -22,3 +22,16 @@ Content-Type: application/json
 ### ?category=Accessories
 ### ?category=Furniture
 GET http://localhost:3000/products?category=electronics&name=Lasdad&stockasd=10
+
+### Update product
+PUT http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
+Content-Type: application/json
+
+{
+  "name": "Monitor LG",
+  "description": "Full HD IPS display",
+  "category": "electronics",
+  "price": 3499.99,
+  "stock": 8,
+  "isActive": 1
+}
