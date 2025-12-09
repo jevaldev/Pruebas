@@ -7,14 +7,24 @@ export class ProductsController {
 
   getProducts = async (req, res, next) => {
     try {
+      const { page = 1, limit = 10 } = req.query
       const result = validateFiltersProduct(req.query)
 
       if (result.error) return res.status(400).json({ error: JSON.parse(result.error.message) })
 
-      const { category, name, isActive } = result.data
-      const products = await this.productsModel.getProducts({ category, name, isActive })
+      const parsedLimit = Number(limit)
+      const parsedPage = Number(page)
+      const offset = (parsedPage - 1) * parsedLimit
 
-      return res.json({ total: products.length, data: products })
+      const { category, name, isActive } = result.data
+      const { products, totalCount, totalPages } = await this.productsModel.getProducts({ category, name, isActive, limit: parsedLimit, offset })
+
+      return res.json({
+        totalCount,
+        totalPages,
+        currentPage: parsedPage,
+        data: products
+      })
     } catch (err) {
       next(err)
     }

@@ -6,25 +6,39 @@ import { DatabaseConnectionError, DatabaseQueryError } from '../errors/database.
 import { ProductNotFound, DuplicatedProduct, BlankInputValues } from '../errors/products.js'
 
 export class ProductsModel {
-  static async getProducts ({ category, name, isActive }) {
+  static async getProducts ({ category, name, isActive, limit, offset }) {
     const { conditions, params } = getFilters([
       { sql: 'name LIKE ?', value: name ? `%${name}%` : undefined },
       { sql: 'LOWER(category) = ?', value: category?.toLowerCase() },
       { sql: 'isActive = ?', value: isActive }
     ])
 
-    let query = 'SELECT BIN_TO_UUID(id) id, name, description, category, price, stock, isActive FROM products'
-    if (conditions.length) query += ' WHERE ' + conditions.join(' AND ')
+    let countQuery = 'SELECT COUNT(*) AS Total FROM products'
+    let query = 'SELECT BIN_TO_UUID(id) as id, name, description, category, price, stock, isActive FROM products'
+
+    if (conditions.length) {
+      query += ' WHERE ' + conditions.join(' AND ')
+      countQuery += ' WHERE ' + conditions.join(' AND ')
+    }
+
+    query += ' LIMIT ? OFFSET ?'
 
     try {
-      const [rows] = await connection.query(query, params)
+      const [products] = await connection.query(query, [...params, limit, offset])
+      const [countRows] = await connection.query(countQuery, params)
+      const total = countRows[0].Total
+      const totalPages = Math.ceil(total / limit)
 
-      if (!rows.length) {
-        if (conditions > 0) throw new ProductNotFound('No products match your filter')
+      if (!products.length) {
+        if (conditions.length) throw new ProductNotFound('No products match your filter')
         throw new ProductNotFound()
       }
 
-      return rows
+      return {
+        products,
+        totalCount: total,
+        totalPages
+      }
     } catch (error) {
       if (error.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       if (error instanceof ProductNotFound) throw error
@@ -65,7 +79,7 @@ export class ProductsModel {
       VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?);`, [uuid, name, description, category, price, stock, isActive])
 
       const [product] = await connection.query(`
-        SELECT BIN_TO_UUID(id) AS id, name, description, category, price, stock, isActive
+        SELECT BIN_TO_UUID(id) as id, name, description, category, price, stock, isActive
         FROM products
         WHERE id = UUID_TO_BIN(?)
       `, [uuid])

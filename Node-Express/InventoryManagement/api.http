@@ -1,5 +1,5 @@
 ### Get all products
-GET http://localhost:3000/products
+GET http://localhost:3000/products?page=5&limit=7
 
 ### Get product by ID
 GET http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
@@ -21,7 +21,7 @@ Content-Type: application/json
 ### ?category=Storage
 ### ?category=Accessories
 ### ?category=Furniture
-GET http://localhost:3000/products?category=electronics&name=Lasdad&stockasd=10
+GET http://localhost:3000/products?name=a&category=electronics
 
 ### Update product
 PUT http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
