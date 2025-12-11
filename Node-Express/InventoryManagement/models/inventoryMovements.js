@@ -1,10 +1,12 @@
 import { connection } from '../database/connection.js'
 import { DatabaseConnectionError, DatabaseQueryError } from '../errors/database.js'
 import { ProductNotFound } from '../errors/products.js'
+import { productExists } from '../lib/productExists.js'
 
 export class InventoryModel {
   static async inventoryEntry ({ id, quantity }) {
     try {
+      await productExists(id)
       const [newEntry] = await connection.query(`
         UPDATE products
         SET stock = stock + ?
@@ -25,13 +27,14 @@ export class InventoryModel {
 
   static async inventoryExit ({ id, quantity }) {
     try {
-      const newExit = await connection.query(`
+      await productExists(id)
+      const [newExit] = await connection.query(`
         UPDATE products
         SET stock = stock - ?
         WHERE id = UUID_TO_BIN(?) AND stock - ? >= 0 `, [quantity, id, quantity])
       console.log(newExit)
 
-      if (newExit.affectedRows === 0) throw new ProductNotFound()
+      if (newExit.affectedRows === 0) throw new ProductNotFound("The stock can't be less than 0")
 
       await connection.query(`
             INSERT INTO inventory_movements (product_id, type,quantity)
@@ -45,8 +48,7 @@ export class InventoryModel {
 
   static async getInventoryMovements ({ id }) {
     try {
-      const [product] = await connection.query('SELECT * FROM products WHERE BIN_TO_UUID(id) = ?', [id])
-      if (product.length === 0) throw new ProductNotFound("This product doesn't exists in the database")
+      await productExists(id)
       const [productMovements] = await connection.query(`
         SELECT im.type, im.quantity, im.created_at, p.name as product_name
         FROM inventory_movements as im
