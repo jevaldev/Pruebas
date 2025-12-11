@@ -1,8 +1,8 @@
 ### Get all products
-GET http://localhost:3000/products?page=1&limit=7
+GET http://localhost:3000/products
 
 ### Get product by ID
-GET http://localhost:3000/products/2580ab9c-96fa-4b7a-ad84-49ce25e6959a
+GET http://localhost:3000/products/79fce6c4-d52e-11f0-89bf-58f1af9bf708
 
 ### Create a new product
 POST http://localhost:3000/products
@@ -46,3 +46,23 @@ Content-Type: application/json
 
 ### Soft-Delete product
 DELETE http://localhost:3000/products/79fce6c4-d52e-11f0-89bf-58f1af9bf708
+
+
+### Inventory entry
+POST http://localhost:3000/inventory/79fce6c4-d52e-11f0-89bf-58f1af9bf708/entry
+Content-Type:  application/json
+
+{
+  "quantity": 200
+}
+
+### Inventory exit 
+POST http://localhost:3000/inventory/79fce6c4-d52e-11f0-89bf-58f1af9bf708/exit
+Content-Type:  application/json
+
+{
+  "quantity": 1000
+}
+
+### GET
+GET http://localhost:3000/inventory/79fe5279-d52e-11f0-89bf-

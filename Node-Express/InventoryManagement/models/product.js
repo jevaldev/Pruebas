@@ -10,7 +10,7 @@ export class ProductsModel {
     const { conditions, params } = getFilters([
       { sql: 'name LIKE ?', value: name ? `%${name}%` : undefined },
       { sql: 'LOWER(category) = ?', value: category?.toLowerCase() },
-      { sql: 'isActive = ?', value: Number(isActive) }
+      { sql: 'isActive = ?', value: isActive ? Number(isActive) : undefined }
     ])
 
     let countQuery = 'SELECT COUNT(*) AS Total FROM products'
@@ -85,7 +85,6 @@ export class ProductsModel {
       `, [uuid])
       return product[0]
     } catch (err) {
-      console.log(err)
       if (err.code === 'ER_DUP_ENTRY') throw new DuplicatedProduct('Product already exits')
       if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       throw new DatabaseQueryError()
@@ -128,7 +127,6 @@ export class ProductsModel {
 
       if (statusUpdated.affectedRows === 0) throw new ProductNotFound()
     } catch (err) {
-      console.log(err)
       if (err instanceof ProductNotFound) throw err
       if (err.code === 'ECONNREFUSED') throw new DatabaseConnectionError()
       throw new DatabaseQueryError()

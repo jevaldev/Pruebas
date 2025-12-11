@@ -1,14 +1,16 @@
 import express from 'express'
 import { createProductRouter } from './routes/products.js'
 import { ZodError } from 'zod'
+import { createInventoryRouter } from './routes/inventoryMovements.js'
 
-export const createApp = ({ productsModel }) => {
+export const createApp = ({ productsModel, inventoryModel }) => {
   const app = express()
   const PORT = process.env.PORT ?? 3000
 
   app.disable('x-powered-by')
   app.use(express.json())
   app.use('/products', createProductRouter({ productsModel }))
+  app.use('/inventory', createInventoryRouter({ inventoryModel }))
 
   app.use((req, res) => {
     return res.status(404).json({ error: 'Resource not found. Check the URL' })
