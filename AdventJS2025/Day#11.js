@@ -1,3 +1,6 @@
+//Problema #11 Regalos sin vigilancia
+//Fácil
+
 function findUnsafeGifts(warehouse) {
   let unsafeCount = 0;
   const rows = warehouse.length;
