@@ -1,5 +1,5 @@
 //Problema #13 La cadena de montaje
-//fácil
+//medio
 
 function runFactory(factory) {
   const factoryGrid = factory.map(row => row.split(""))
